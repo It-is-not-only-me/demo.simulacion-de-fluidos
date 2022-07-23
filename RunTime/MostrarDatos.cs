@@ -5,13 +5,26 @@ using ItIsNotOnlyMe.MarchingCubes;
 
 public class MostrarDatos : GenerarDatos
 {
-    [SerializeField] private Bounds _bounds;
+    public override MarchingCubeMesh MarchingCubeMesh => _mesh;
+    public override bool Actualizar => _simulacion.Actualizar;
 
-    public override MarchingCubeMesh MarchingCubeMesh => throw new System.NotImplementedException();
 
-    public override Vector3Int NumeroDePuntosPorEje => throw new System.NotImplementedException();
+    private Bounds _bounds;
+    private SimulacionBehaviour _simulacion;
+    private MarchingCubeMesh _mesh;
 
-    public override bool Actualizar => throw new System.NotImplementedException();
+    private void Awake()
+    {
+        _simulacion = GetComponent<SimulacionBehaviour>();
+        
+        _bounds.center = transform.position;
+        _bounds.size = _simulacion.TamanioSimulacion;
+    }
+
+    private void GenerarMesh()
+    {
+
+    }
 
     private void OnDrawGizmos()
     {

@@ -1,7 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Simulacion 
+public interface ISimulacion
+{
+    public Dato[,,] EstadoActualDeLaSimulacion();
+}
+
+public class Simulacion : ISimulacion
 {
     private Dato[,,] _datos;
     private uint _ancho, _alto, _profundidad;
@@ -19,6 +24,8 @@ public class Simulacion
         : this(new Dato[ancho, alto, profundidad])
     {
     }
+
+    
 
     public Dato[,,] EstadoActualDeLaSimulacion() => _datos;
 }

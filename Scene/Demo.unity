@@ -228,6 +228,7 @@ GameObject:
   - component: {fileID: 1277880076}
   - component: {fileID: 1277880077}
   - component: {fileID: 1277880078}
+  - component: {fileID: 1277880079}
   m_Layer: 0
   m_Name: Simulacion
   m_TagString: Untagged
@@ -279,6 +280,19 @@ MonoBehaviour:
   _bounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
+--- !u!114 &1277880079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277880075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f077ad6ad36ac74d9d6b080374f6498, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tamanioSimulacion: {x: 10, y: 10, z: 10}
 --- !u!1 &1491125926
 GameObject:
   m_ObjectHideFlags: 0
