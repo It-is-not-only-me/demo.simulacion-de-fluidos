@@ -277,9 +277,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da8a9b508db81dd428e93651e97092d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!114 &1277880079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,6 +290,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tamanioSimulacion: {x: 10, y: 10, z: 10}
+  _densidadDeInicio:
+  - Punto: {x: 0, y: 0, z: 0}
+    Densidad: 1
+  _velocidadDeInicio:
+  - Punto: {x: 3, y: 3, z: 3}
+    Velocidad: {x: 1, y: 0, z: 0}
+  - Punto: {x: 4, y: 3, z: 3}
+    Velocidad: {x: 0, y: 1, z: 0}
+  - Punto: {x: 4, y: 4, z: 3}
+    Velocidad: {x: 0, y: 0, z: 1}
 --- !u!1 &1491125926
 GameObject:
   m_ObjectHideFlags: 0

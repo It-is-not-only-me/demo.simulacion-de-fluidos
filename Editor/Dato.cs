@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public struct Dato 
+public struct DatoSimulacion 
 
 {
     public Vector3 Velocidad;
