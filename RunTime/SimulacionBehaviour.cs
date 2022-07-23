@@ -32,8 +32,13 @@ public class SimulacionBehaviour : MonoBehaviour, ISimulacion
     [SerializeField] private List<AgregarDensidadEnPunto> _densidadDeInicio;
     [SerializeField] private List<AgregarVelocidadEnPunto> _velocidadDeInicio;
 
+    [Space]
+
+    [SerializeField] private uint _framesParaActualizar;
+
     private Simulacion _simulacion;
     private bool _actualizar;
+    private int _contador;
 
     private void Awake()
     {
@@ -63,7 +68,20 @@ public class SimulacionBehaviour : MonoBehaviour, ISimulacion
         _actualizar = true;
     }
 
+    private void FixedUpdate()
+    {
+        _contador++;
+
+        if (_contador % _framesParaActualizar == 0)
+        {
+            Simular();
+            _actualizar = true;
+            _contador = 0;
+        }
+    }
+
     public bool AgregarDensidad(uint x, uint y, uint z, float densidad) => _simulacion.AgregarDensidad(x, y, z, densidad);
     public bool AgregarVelocidad(uint x, uint y, uint z, Vector3 velocidad) => _simulacion.AgregarVelocidad(x, y, z, velocidad);
+    public void Simular() => _simulacion.Simular();
     public DatoSimulacion[,,] EstadoActualDeLaSimulacion() => _simulacion.EstadoActualDeLaSimulacion();
 }

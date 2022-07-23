@@ -9,6 +9,8 @@ public interface ISimulacion
     public bool AgregarDensidad(uint x, uint y, uint z, float densidad);
 
     public bool AgregarVelocidad(uint x, uint y, uint z, Vector3 velocidad);
+
+    public void Simular();
 }
 
 public class Simulacion : ISimulacion
@@ -55,6 +57,11 @@ public class Simulacion : ISimulacion
     }
 
     public DatoSimulacion[,,] EstadoActualDeLaSimulacion() => _datos;
+
+    public void Simular()
+    {
+        
+    }
 
     private bool EnRango(uint x, uint y, uint z)
     {
