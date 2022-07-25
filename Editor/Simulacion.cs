@@ -60,7 +60,19 @@ public class Simulacion : ISimulacion
 
     public void Simular()
     {
+        Matriz A = new Matriz(2, 2);
+        A[0, 0] = 10;
+        A[0, 1] = 2;
+        A[1, 0] = 2;
+        A[1, 1] = -8;
         
+        Vector b = new Vector(2);
+        b[0] = 5;
+        b[1] = 2;
+
+        IMatriz resutaldo = Solver.LinealSolver(A, b, 20, 0.01f);
+
+        Debug.Log("x: " + resutaldo[0, 0] + ", y: " + resutaldo[1, 0]);
     }
 
     private bool EnRango(uint x, uint y, uint z)
