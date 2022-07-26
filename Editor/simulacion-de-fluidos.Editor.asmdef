@@ -1,7 +1,9 @@
 {
     "name": "simulacion-de-fluidos.Editor",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:4bbbd2f921c79464ba8cd7c69d5969bc"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

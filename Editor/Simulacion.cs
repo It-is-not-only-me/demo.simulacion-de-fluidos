@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ItIsNotOnlyMe.LinealSolver;
 
 public interface ISimulacion
 {
@@ -65,28 +66,28 @@ public class Simulacion : ISimulacion
         Matriz A = new Matriz(tamanio, tamanio);
         Vector b = new Vector(tamanio);
 
-        List<float> valoresA = new List<float>
-        {
-            30, 1, 1, 1, 1,
-            1, 30, 1, 1, 1, 
-            1, 1, 30, 1, 1,
-            1, 1, 1, 30, 1,
-            1, 1, 1, 1, 30
-        };
-        List<float> valoresB = new List<float>
-        {
-            9, 8, 9, 5, 0
-        };
-
-        for (uint i = 0; i < tamanio; i++)
-        {
-            for (uint j = 0; j < tamanio; j++)
+            List<float> valoresA = new List<float>
             {
-                uint posicion = i * tamanio + j;
-                A[i, j] = valoresA[(int)posicion];
+                25, 2, 5, 7, 7, 
+                2, -15, 2, 2, 4, 
+                5, 2, 20, 0, 3,
+                7, 2, 0, 20, 7,
+                7, 4, 3, 7, 30
+            };
+            List<float> valoresB = new List<float>
+            {
+                9, 8, 9, 5, 0
+            };
+
+            for (uint i = 0; i < tamanio; i++)
+            {
+                for (uint j = 0; j < tamanio; j++)
+                {
+                    uint posicion = i * tamanio + j;
+                    A[i, j] = valoresA[(int)posicion];
+                }
+                b[i] = valoresB[(int)i];
             }
-            b[i] = valoresB[(int)i];
-        }
 
         float errorMaximo = 0.00001f;
         IMatriz resultadoConjugado = LinealSolver.GradienteConjugado(A, b, 50, errorMaximo);
