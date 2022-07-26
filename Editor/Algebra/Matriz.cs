@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Matriz : IMatriz
 {
+    private static float epsilon = 0.001f;
+
     private float[,] _matriz;
     private uint _tamanioX, _tamanioY;
 
@@ -53,10 +55,7 @@ public class Matriz : IMatriz
     public IMatriz Sumar(IMatriz otro)
     {
         if (!SonDelMismoTamanio(otro))
-        {
-            Debug.LogError("No son del mismo tamanio\nTenian: x: " + _tamanioX + ", y: " + _tamanioY + ", x: " + otro.Tamanio().Item1 + ", y: " + otro.Tamanio().Item2);
             return null;
-        }
 
         Matriz resultado = new Matriz(_tamanioX, _tamanioY);
 
@@ -95,11 +94,38 @@ public class Matriz : IMatriz
         {
             float moduloActual = 0;
             for (uint j = 0; j < _tamanioY; j++)
-            {
                 moduloActual += Mathf.Abs(this[i, j]);
-            }
             modulo = Mathf.Max(modulo, moduloActual);
         }
         return modulo;
+    }
+
+    public bool EsSimetrica()
+    {
+        if (!EsCuadrada())
+            return false;
+
+        bool esSimetrica = true;
+        for (uint i = 0; i < _tamanioX && esSimetrica; i++)
+            for (uint j = i + 1; j < _tamanioY && esSimetrica; j++)
+                esSimetrica &= (this[i, j] < this[j, i] + epsilon && this[i, j] > this[j, i] - epsilon);
+        return esSimetrica;
+    }
+
+    public bool EsDiagonalmenteDominante()
+    {
+        if (!EsCuadrada())
+            return false;
+
+        bool esDiagonalmenteDominante = true;
+        for (uint i = 0; i < _tamanioX && esDiagonalmenteDominante; i++)
+        {
+            float valor = 0;
+            for (uint j = 0; j < _tamanioY && esDiagonalmenteDominante; j++)
+                valor += (i == j) ? 0 : Mathf.Abs(this[i, j]);
+            esDiagonalmenteDominante &= Mathf.Abs(this[i, i]) > valor;
+        }
+
+        return esDiagonalmenteDominante;
     }
 }

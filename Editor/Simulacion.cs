@@ -60,19 +60,57 @@ public class Simulacion : ISimulacion
 
     public void Simular()
     {
-        Matriz A = new Matriz(2, 2);
-        A[0, 0] = 10;
-        A[0, 1] = 2;
-        A[1, 0] = 2;
-        A[1, 1] = -8;
-        
-        Vector b = new Vector(2);
-        b[0] = 5;
-        b[1] = 2;
+        uint tamanio = 5;
 
-        IMatriz resutaldo = Solver.LinealSolver(A, b, 20, 0.01f);
+        Matriz A = new Matriz(tamanio, tamanio);
+        Vector b = new Vector(tamanio);
 
-        Debug.Log("x: " + resutaldo[0, 0] + ", y: " + resutaldo[1, 0]);
+        List<float> valoresA = new List<float>
+        {
+            25, 2, 5, 7, 7, 
+            2, -15, 2, 2, 4, 
+            5, 2, 20, 0, 3,
+            7, 2, 0, 20, 7,
+            7, 4, 3, 7, 30
+        };
+        List<float> valoresB = new List<float>
+        {
+            9, 8, 9, 5, 0
+        };
+
+        for (uint i = 0; i < tamanio; i++)
+        {
+            for (uint j = 0; j < tamanio; j++)
+            {
+                uint posicion = i * tamanio + j;
+                A[i, j] = valoresA[(int)posicion];
+            }
+            b[i] = valoresB[(int)i];
+        }
+
+        IMatriz resultadoConjugado = LinealSolver.GradienteConjugado(A, b, 50, 0.0001f);
+        IMatriz resultadoJacobi = LinealSolver.Jacobi(A, b, 50, 0.0001f);
+        IMatriz resultadoGaussSeidel = LinealSolver.GaussSeidel(A, b, 50, 0.0001f);
+
+        if (A.EsSimetrica())
+            Debug.Log("Es simetrica");
+        if (A.EsDiagonalmenteDominante())
+            Debug.Log("Es diagonalmente dominante");
+
+        string stringGradienteConjugado = "Gradiente Conjugado =";
+        string stringJacobi = "Jacobi = ";
+        string stringGaussSeidel = "Gauss Seidel = ";
+
+        for (uint i = 0; i < tamanio; i++)
+        {
+            stringGradienteConjugado += " [" + i + "]: " + resultadoConjugado[i, 0];
+            stringJacobi += " [" + i + "]: " + resultadoJacobi[i, 0];
+            stringGaussSeidel += " [" + i + "]: " + resultadoGaussSeidel[i, 0];
+        }
+
+        Debug.Log(stringGradienteConjugado);
+        Debug.Log(stringJacobi);
+        Debug.Log(stringGaussSeidel);
     }
 
     private bool EnRango(uint x, uint y, uint z)

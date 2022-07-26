@@ -29,4 +29,8 @@ public class Vector : IMatriz
     public IMatriz Transponer() => _vector.Transponer();
 
     public float ModuloInfinito() => _vector.ModuloInfinito();
+
+    public bool EsSimetrica() => _vector.EsSimetrica();
+
+    public bool EsDiagonalmenteDominante() => _vector.EsDiagonalmenteDominante();
 }
