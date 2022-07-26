@@ -67,11 +67,11 @@ public class Simulacion : ISimulacion
 
         List<float> valoresA = new List<float>
         {
-            25, 2, 5, 7, 7, 
-            2, -15, 2, 2, 4, 
-            5, 2, 20, 0, 3,
-            7, 2, 0, 20, 7,
-            7, 4, 3, 7, 30
+            30, 1, 1, 1, 1,
+            1, 30, 1, 1, 1, 
+            1, 1, 30, 1, 1,
+            1, 1, 1, 30, 1,
+            1, 1, 1, 1, 30
         };
         List<float> valoresB = new List<float>
         {
@@ -88,9 +88,10 @@ public class Simulacion : ISimulacion
             b[i] = valoresB[(int)i];
         }
 
-        IMatriz resultadoConjugado = LinealSolver.GradienteConjugado(A, b, 50, 0.0001f);
-        IMatriz resultadoJacobi = LinealSolver.Jacobi(A, b, 50, 0.0001f);
-        IMatriz resultadoGaussSeidel = LinealSolver.GaussSeidel(A, b, 50, 0.0001f);
+        float errorMaximo = 0.00001f;
+        IMatriz resultadoConjugado = LinealSolver.GradienteConjugado(A, b, 50, errorMaximo);
+        IMatriz resultadoJacobi = LinealSolver.Jacobi(A, b, 50, errorMaximo);
+        IMatriz resultadoGaussSeidel = LinealSolver.GaussSeidel(A, b, 50, errorMaximo);
 
         if (A.EsSimetrica())
             Debug.Log("Es simetrica");

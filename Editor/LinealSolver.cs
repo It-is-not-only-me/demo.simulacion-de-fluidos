@@ -1,6 +1,4 @@
 
-using UnityEngine;
-
 public static class LinealSolver
 {
     // matriz A tiene que ser simetrica y definida positiva
@@ -32,8 +30,6 @@ public static class LinealSolver
 
             iteracionesActual++;
         }
-
-        Debug.Log("Cantidad de iteracion: " + iteracionesActual + " en Gradiente conjugado");
 
         return x;
     }
@@ -69,8 +65,6 @@ public static class LinealSolver
             x = OperacionIteracion(matrizE, vectorC, x);
             iteracionesActual++;
         }
-
-        Debug.Log("Cantidad de iteracion: " + iteracionesActual + " en Jacobi");
 
         return x;
     }
@@ -109,8 +103,6 @@ public static class LinealSolver
             x = OperacionIteracion(matrizE, vectorC, x);
             iteracionesActual++;
         }
-
-        Debug.Log("Cantidad de iteracion: " + iteracionesActual + " en GaussSeidel");
 
         return x;
     }
