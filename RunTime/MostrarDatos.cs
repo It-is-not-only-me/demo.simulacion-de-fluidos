@@ -30,7 +30,7 @@ public class MostrarDatos : GenerarDatos
         Vector3Int puntosPorEje = _simulacion.TamanioSimulacion + Vector3Int.one;
         int cantidadDeDatos = puntosPorEje.x * puntosPorEje.y * puntosPorEje.z;
 
-        DatoSimulacion[,,] datosSimulacion = _simulacion.EstadoActualDeLaSimulacion();
+        IGrilla datosSimulacion = _simulacion.EstadoActualDeLaSimulacion();
 
         Dato[] datos = new Dato[cantidadDeDatos];
         Color[] colores = new Color[cantidadDeDatos];
@@ -41,7 +41,7 @@ public class MostrarDatos : GenerarDatos
                 for (int k = 0; k < puntosPorEje.z; k++)
                 {
                     colores[contador] = new Color(0.5f, 0.5f, 1);
-                    float valor = (i == 0 || j == 0 || k == 0) ? 0 : datosSimulacion[i - 1, j - 1, k - 1].Densidad;
+                    float valor = (i == 0 || j == 0 || k == 0) ? 0 : datosSimulacion[(uint)(i - 1), (uint)(j - 1), (uint)(k - 1)].Densidad;
                     datos[contador++].CargarDatos(new Vector3(i, j, k), valor);
                 }
 

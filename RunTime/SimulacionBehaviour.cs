@@ -34,6 +34,12 @@ public class SimulacionBehaviour : MonoBehaviour, ISimulacion
 
     [Space]
 
+    [SerializeField] private int _cantidadDeIteraciones;
+    [SerializeField] private float _coeficienteDeDifusion;
+    [SerializeField] private float _dt;
+
+    [Space]
+
     [SerializeField] private uint _framesParaActualizar;
 
     private Simulacion _simulacion;
@@ -42,13 +48,9 @@ public class SimulacionBehaviour : MonoBehaviour, ISimulacion
 
     private void Awake()
     {
-        uint ancho, alto, profundidad;
+        GrillaBehaviour grillaActual = GetComponent<GrillaBehaviour>();
 
-        ancho = (uint)_tamanioSimulacion.x;
-        alto = (uint)_tamanioSimulacion.y;
-        profundidad = (uint)_tamanioSimulacion.z;
-
-        _simulacion = new Simulacion(ancho, alto, profundidad);
+        _simulacion = new Simulacion(grillaActual, grillaActual.NuevaGrillaVacia(), _cantidadDeIteraciones, _coeficienteDeDifusion, _dt);
         foreach (AgregarDensidadEnPunto agregarDensidad in _densidadDeInicio)
         {
             uint x = (uint)agregarDensidad.Punto.x;
@@ -83,5 +85,5 @@ public class SimulacionBehaviour : MonoBehaviour, ISimulacion
     public bool AgregarDensidad(uint x, uint y, uint z, float densidad) => _simulacion.AgregarDensidad(x, y, z, densidad);
     public bool AgregarVelocidad(uint x, uint y, uint z, Vector3 velocidad) => _simulacion.AgregarVelocidad(x, y, z, velocidad);
     public void Simular() => _simulacion.Simular();
-    public DatoSimulacion[,,] EstadoActualDeLaSimulacion() => _simulacion.EstadoActualDeLaSimulacion();
+    public IGrilla EstadoActualDeLaSimulacion() => _simulacion.EstadoActualDeLaSimulacion();
 }

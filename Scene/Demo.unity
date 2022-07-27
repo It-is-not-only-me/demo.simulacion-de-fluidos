@@ -229,6 +229,7 @@ GameObject:
   - component: {fileID: 1277880077}
   - component: {fileID: 1277880078}
   - component: {fileID: 1277880079}
+  - component: {fileID: 1277880080}
   m_Layer: 0
   m_Name: Simulacion
   m_TagString: Untagged
@@ -258,7 +259,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1277880075}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b71de3c0e752aee46bad158ae11eac3e, type: 3}
   m_Name: 
@@ -300,7 +301,25 @@ MonoBehaviour:
     Velocidad: {x: 0, y: 1, z: 0}
   - Punto: {x: 4, y: 4, z: 3}
     Velocidad: {x: 0, y: 0, z: 1}
-  _framesParaActualizar: 1
+  _cantidadDeIteraciones: 10
+  _coeficienteDeDifusion: 1
+  _dt: 0.01
+  _framesParaActualizar: 15
+--- !u!114 &1277880080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277880075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b5947943fc46d74db5d193d9f981809, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ancho: 4
+  _alto: 4
+  _profundidad: 4
 --- !u!1 &1491125926
 GameObject:
   m_ObjectHideFlags: 0

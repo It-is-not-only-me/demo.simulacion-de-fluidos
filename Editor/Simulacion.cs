@@ -3,120 +3,102 @@ using System.Collections.Generic;
 using UnityEngine;
 using ItIsNotOnlyMe.LinealSolver;
 
-public interface ISimulacion
-{
-    public DatoSimulacion[,,] EstadoActualDeLaSimulacion();
-
-    public bool AgregarDensidad(uint x, uint y, uint z, float densidad);
-
-    public bool AgregarVelocidad(uint x, uint y, uint z, Vector3 velocidad);
-
-    public void Simular();
-}
-
 public class Simulacion : ISimulacion
 {
-    private DatoSimulacion[,,] _datos;
-    private uint _ancho, _alto, _profundidad;
+    private static float _errorMaximo = 0.0001f;
+    
+    private IGrilla _grillaActual, _grillaAuxilear;
 
-    public Simulacion(DatoSimulacion[,,] datos)
+    private int _cantidadIteraciones;
+    private float _coeficienteDeDifusion, _dt;
+
+    private bool _intercambio;
+
+    public Simulacion(IGrilla grillaActual, IGrilla grillaAuxilear, int cantidadIteraciones, float coeficienteDeDifusion, float dt)
     {
-        _datos = datos;
+        _grillaActual = grillaActual;
+        _grillaAuxilear = grillaAuxilear;
 
-        _ancho = (uint)_datos.GetLength(0);
-        _alto = (uint)_datos.GetLength(1);
-        _profundidad = (uint)_datos.GetLength(2);
+        _cantidadIteraciones = cantidadIteraciones;
+        _coeficienteDeDifusion = coeficienteDeDifusion;
+        _dt = dt;
+
+        _intercambio = false;
     }
 
-    public Simulacion(uint ancho, uint alto, uint profundidad)
-        : this(new DatoSimulacion[ancho, alto, profundidad])
-    {
-    }
+    public bool AgregarDensidad(uint x, uint y, uint z, float densidad) => _grillaActual.AgregarDensidad(x, y, z, densidad);
+    public bool AgregarVelocidad(uint x, uint y, uint z, Vector3 velocidad) => _grillaActual.AgregarVelocidad(x, y, z, velocidad);
 
-    public bool AgregarDensidad(uint x, uint y, uint z, float densidad)
-    {
-        if (!EnRango(x, y, z))
-            return false;
-
-        DatoSimulacion dato = _datos[x, y, z];
-        dato.Densidad = densidad;
-        _datos[x, y, z] = dato;
-
-        return true;
-    }
-
-    public bool AgregarVelocidad(uint x, uint y, uint z, Vector3 velocidad)
-    {
-        if (!EnRango(x, y, z))
-            return false;
-
-        DatoSimulacion dato = _datos[x, y, z];
-        dato.Velocidad = velocidad;
-        _datos[x, y, z] = dato;
-
-        return true;
-    }
-
-    public DatoSimulacion[,,] EstadoActualDeLaSimulacion() => _datos;
+    public IGrilla EstadoActualDeLaSimulacion() => _intercambio ? _grillaAuxilear : _grillaActual;
 
     public void Simular()
     {
-        uint tamanio = 5;
-
-        Matriz A = new Matriz(tamanio, tamanio);
-        Vector b = new Vector(tamanio);
-
-            List<float> valoresA = new List<float>
-            {
-                25, 2, 5, 7, 7, 
-                2, -15, 2, 2, 4, 
-                5, 2, 20, 0, 3,
-                7, 2, 0, 20, 7,
-                7, 4, 3, 7, 30
-            };
-            List<float> valoresB = new List<float>
-            {
-                9, 8, 9, 5, 0
-            };
-
-            for (uint i = 0; i < tamanio; i++)
-            {
-                for (uint j = 0; j < tamanio; j++)
-                {
-                    uint posicion = i * tamanio + j;
-                    A[i, j] = valoresA[(int)posicion];
-                }
-                b[i] = valoresB[(int)i];
-            }
-
-        float errorMaximo = 0.00001f;
-        IMatriz resultadoConjugado = LinealSolver.GradienteConjugado(A, b, 50, errorMaximo);
-        IMatriz resultadoJacobi = LinealSolver.Jacobi(A, b, 50, errorMaximo);
-        IMatriz resultadoGaussSeidel = LinealSolver.GaussSeidel(A, b, 50, errorMaximo);
-
-        if (A.EsSimetrica())
-            Debug.Log("Es simetrica");
-        if (A.EsDiagonalmenteDominante())
-            Debug.Log("Es diagonalmente dominante");
-
-        string stringGradienteConjugado = "Gradiente Conjugado =";
-        string stringJacobi = "Jacobi = ";
-        string stringGaussSeidel = "Gauss Seidel = ";
-
-        for (uint i = 0; i < tamanio; i++)
+        if (_intercambio)
         {
-            stringGradienteConjugado += " [" + i + "]: " + resultadoConjugado[i, 0];
-            stringJacobi += " [" + i + "]: " + resultadoJacobi[i, 0];
-            stringGaussSeidel += " [" + i + "]: " + resultadoGaussSeidel[i, 0];
+            Diffuse(_grillaAuxilear, _grillaActual, _coeficienteDeDifusion, _errorMaximo, _cantidadIteraciones);
         }
+        else
+        {
+            Diffuse(_grillaActual, _grillaAuxilear, _coeficienteDeDifusion, _errorMaximo, _cantidadIteraciones);
+        }
+            
 
-        Debug.Log(stringGradienteConjugado);
-        Debug.Log(stringJacobi);
-        Debug.Log(stringGaussSeidel);
+        _intercambio = !_intercambio;
     }
 
-    private bool EnRango(uint x, uint y, uint z)
+    public static void Diffuse(IGrilla datosAnteriores, IGrilla datosAConseguir, float coeficienteDeDifucion, float errorMaximo, int cantidadDeIteraciones)
     {
-        return x < _ancho && y < _alto && z < _profundidad;
+        Vector3Int tamanio = datosAnteriores.Tamanio;
+        Vector3Int tamanioEcuaciones = tamanio - 2 * Vector3Int.one;
+
+        uint cantidadEcuaciones = (uint)((tamanioEcuaciones.x) * (tamanioEcuaciones.y) * (tamanioEcuaciones.z));
+        MatrizDiscreta matrizDeConstantes = new MatrizDiscreta(cantidadEcuaciones, cantidadEcuaciones);
+        Vector vector = new Vector(cantidadEcuaciones);
+
+        float coeficiente = coeficienteDeDifucion / (6 + 6 * coeficienteDeDifucion);
+        for (int i = 1; i < tamanio.x - 1; i++)
+            for (int j = 1; j < tamanio.y - 1; j++)
+                for (int k = 1; k < tamanio.z - 1; k++)
+                {
+                    uint indexActual = Index(i - 1, j - 1, k - 1, tamanioEcuaciones);
+
+                    matrizDeConstantes[indexActual, indexActual] = 1;
+                    vector[indexActual] = datosAnteriores[(uint)i, (uint)j, (uint)k].Densidad;
+
+                    for (int x = -1; x <= 1; x += 2)
+                        for (int y = -1; y <= 1; y += 2)
+                            for (int z = -1; z <= 1; z += 2)
+                            {
+                                if (EnBorde(i + x, j + y, k + z, tamanio))
+                                {
+                                    vector[indexActual] += datosAnteriores[(uint)i, (uint)j, (uint)k].Densidad * coeficiente;
+                                }
+                                else
+                                {
+                                    uint indexNuevo = Index(i - 1 + x, j - 1 + y, k - 1 + z, tamanioEcuaciones);
+                                    matrizDeConstantes[indexActual, indexNuevo] = -coeficiente;
+                                }
+                            }
+                }
+
+        IMatriz resultados = LinealSolver.GradienteConjugado(matrizDeConstantes, vector, cantidadDeIteraciones, errorMaximo);
+        for (int i = 1, contador = 0; i < tamanio.x - 1; i++)
+            for (int j = 1; j < tamanio.y - 1; j++)
+                for (int k = 1; k < tamanio.z - 1; k++, contador++)
+                {
+                    DatoSimulacion dato = datosAConseguir[(uint)i, (uint)j, (uint)k];
+                    dato.Densidad = resultados[(uint)contador, 0];
+                    datosAConseguir[(uint)i, (uint)j, (uint)k] = dato;
+                }
+    }
+
+    private static uint Index(int x, int y, int z, Vector3Int tamanio)
+    {
+        return (uint)(x * tamanio.z * tamanio.y + y * tamanio.z + z);
+    }
+
+    private static bool EnBorde(int x, int y, int z, Vector3Int tamanio)
+    {
+        return x == 0 || y == 0 || z == 0 || x == tamanio.x || y == tamanio.y || z == tamanio.z;
     }
 }
