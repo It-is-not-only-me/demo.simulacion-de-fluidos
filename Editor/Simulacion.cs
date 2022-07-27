@@ -55,30 +55,35 @@ public class Simulacion : ISimulacion
         MatrizDiscreta matrizDeConstantes = new MatrizDiscreta(cantidadEcuaciones, cantidadEcuaciones);
         Vector vector = new Vector(cantidadEcuaciones);
 
-        float coeficiente = coeficienteDeDifucion / (6 + 6 * coeficienteDeDifucion);
+        float coeficiente = coeficienteDeDifucion / 6;
+
+        List<Vector3Int> desfases = new List<Vector3Int>
+        {
+            Vector3Int.right, Vector3Int.left, Vector3Int.up, Vector3Int.down, Vector3Int.forward, Vector3Int.back
+        };
+
         for (int i = 1; i < tamanio.x - 1; i++)
             for (int j = 1; j < tamanio.y - 1; j++)
                 for (int k = 1; k < tamanio.z - 1; k++)
                 {
                     uint indexActual = Index(i - 1, j - 1, k - 1, tamanioEcuaciones);
 
-                    matrizDeConstantes[indexActual, indexActual] = 1;
+                    matrizDeConstantes[indexActual, indexActual] = 1 + coeficienteDeDifucion;
                     vector[indexActual] = datosAnteriores[(uint)i, (uint)j, (uint)k].Densidad;
-
-                    for (int x = -1; x <= 1; x += 2)
-                        for (int y = -1; y <= 1; y += 2)
-                            for (int z = -1; z <= 1; z += 2)
-                            {
-                                if (EnBorde(i + x, j + y, k + z, tamanio))
-                                {
-                                    vector[indexActual] += datosAnteriores[(uint)i, (uint)j, (uint)k].Densidad * coeficiente;
-                                }
-                                else
-                                {
-                                    uint indexNuevo = Index(i - 1 + x, j - 1 + y, k - 1 + z, tamanioEcuaciones);
-                                    matrizDeConstantes[indexActual, indexNuevo] = -coeficiente;
-                                }
-                            }
+                    
+                    foreach (Vector3Int desfase in desfases)
+                    {
+                        int x = desfase.x, y = desfase.y, z = desfase.z;
+                        if (EnBorde(i + x, j + y, k + z, tamanio))
+                        {
+                            vector[indexActual] += datosAConseguir[(uint)i, (uint)j, (uint)k].Densidad * coeficiente;
+                        }
+                        else
+                        {
+                            uint indexNuevo = Index(i + x - 1, j + y - 1, k + z - 1, tamanioEcuaciones);
+                            matrizDeConstantes[indexActual, indexNuevo] = -coeficiente;
+                        }
+                    }
                 }
 
         IMatriz resultados = LinealSolver.GradienteConjugado(matrizDeConstantes, vector, cantidadDeIteraciones, errorMaximo);
@@ -99,6 +104,6 @@ public class Simulacion : ISimulacion
 
     private static bool EnBorde(int x, int y, int z, Vector3Int tamanio)
     {
-        return x == 0 || y == 0 || z == 0 || x == tamanio.x || y == tamanio.y || z == tamanio.z;
+        return x == 0 || y == 0 || z == 0 || x == tamanio.x -1 || y == tamanio.y - 1 || z == tamanio.z - 1;
     }
 }

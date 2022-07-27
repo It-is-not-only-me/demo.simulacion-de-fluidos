@@ -71,13 +71,4 @@ public class MostrarDatos : GenerarDatos
     {
         return z + y * puntosPorEje.z + x * puntosPorEje.z * puntosPorEje.y;
     }
-
-    private void OnDrawGizmos()
-    {
-        if (_simulacion == null)
-            _simulacion = GetComponent<SimulacionBehaviour>();
-
-        Vector3 ancho = _simulacion.TamanioSimulacion;
-        Gizmos.DrawWireCube(transform.position + 0.5f * ancho, ancho);
-    }
 }

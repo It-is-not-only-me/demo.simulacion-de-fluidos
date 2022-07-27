@@ -3,21 +3,32 @@
 public class GrillaBehaviour : MonoBehaviour, IGrilla
 {
     [SerializeField] uint _ancho, _alto, _profundidad;
-    
-    private IGrilla _grilla;
 
-    public DatoSimulacion this[uint i, uint j, uint k] { get => _grilla[i, j, k]; set => _grilla[i, j, k] = value; }
-
-    public Vector3Int Tamanio => _grilla.Tamanio;
-
-    private void Awake()
+    private IGrilla _grillaActual 
     {
-        _grilla = NuevaGrillaVacia();
+        get
+        {
+            if (_grilla == null)
+                _grilla = NuevaGrillaVacia();
+            return _grilla;
+        }
     }
-
-    public bool AgregarDensidad(uint x, uint y, uint z, float densidad) => _grilla.AgregarDensidad(x, y, z, densidad);
-
-    public bool AgregarVelocidad(uint x, uint y, uint z, Vector3 velocidad) => _grilla.AgregarVelocidad(x, y, z, velocidad);
-
+    private IGrilla _grilla;
     public IGrilla NuevaGrillaVacia() => new Grilla(_ancho, _alto, _profundidad);
+    
+
+    public DatoSimulacion this[uint i, uint j, uint k] { get => _grillaActual[i, j, k]; set => _grillaActual[i, j, k] = value; }
+
+    public Vector3Int Tamanio => _grillaActual.Tamanio;
+
+    public bool AgregarDensidad(uint x, uint y, uint z, float densidad) => _grillaActual.AgregarDensidad(x, y, z, densidad);
+
+    public bool AgregarVelocidad(uint x, uint y, uint z, Vector3 velocidad) => _grillaActual.AgregarVelocidad(x, y, z, velocidad);
+
+
+    private void OnDrawGizmos()
+    {
+        Vector3 ancho = Tamanio;
+        Gizmos.DrawWireCube(transform.position + 0.5f * ancho, ancho);
+    }
 }

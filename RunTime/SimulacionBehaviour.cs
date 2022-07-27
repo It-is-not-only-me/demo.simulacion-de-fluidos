@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(GrillaBehaviour))]
 public class SimulacionBehaviour : MonoBehaviour, ISimulacion
 {
     [System.Serializable]
@@ -18,6 +19,7 @@ public class SimulacionBehaviour : MonoBehaviour, ISimulacion
     }
 
     public Vector3Int TamanioSimulacion => _tamanioSimulacion;
+
     public bool Actualizar
     {
         get
@@ -28,7 +30,6 @@ public class SimulacionBehaviour : MonoBehaviour, ISimulacion
         }
     }
 
-    [SerializeField] private Vector3Int _tamanioSimulacion;
     [SerializeField] private List<AgregarDensidadEnPunto> _densidadDeInicio;
     [SerializeField] private List<AgregarVelocidadEnPunto> _velocidadDeInicio;
 
@@ -43,12 +44,14 @@ public class SimulacionBehaviour : MonoBehaviour, ISimulacion
     [SerializeField] private uint _framesParaActualizar;
 
     private Simulacion _simulacion;
+    private Vector3Int _tamanioSimulacion;
     private bool _actualizar;
     private int _contador;
 
-    private void Awake()
+    private void Start()
     {
         GrillaBehaviour grillaActual = GetComponent<GrillaBehaviour>();
+        _tamanioSimulacion = grillaActual.Tamanio;
 
         _simulacion = new Simulacion(grillaActual, grillaActual.NuevaGrillaVacia(), _cantidadDeIteraciones, _coeficienteDeDifusion, _dt);
         foreach (AgregarDensidadEnPunto agregarDensidad in _densidadDeInicio)
