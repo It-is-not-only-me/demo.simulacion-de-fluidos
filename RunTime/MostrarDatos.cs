@@ -40,7 +40,7 @@ public class MostrarDatos : GenerarDatos
             for (int j = 0; j < puntosPorEje.y; j++)
                 for (int k = 0; k < puntosPorEje.z; k++)
                 {
-                    colores[contador] = new Color(0.5f, 0.5f, 1);
+                    colores[contador] = new Color(0.75f, 0.75f, 1);
                     float valor = (i == 0 || j == 0 || k == 0) ? 0 : datosSimulacion[(uint)(i - 1), (uint)(j - 1), (uint)(k - 1)].Densidad;
                     datos[contador++].CargarDatos(new Vector3(i, j, k), valor);
                 }
