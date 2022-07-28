@@ -56,17 +56,17 @@ public class SimulacionBehaviour : MonoBehaviour, ISimulacion
         _simulacion = new Simulacion(grillaActual, grillaActual.NuevaGrillaVacia(), _cantidadDeIteraciones, _coeficienteDeDifusion, _dt);
         foreach (AgregarDensidadEnPunto agregarDensidad in _densidadDeInicio)
         {
-            uint x = (uint)agregarDensidad.Punto.x;
-            uint y = (uint)agregarDensidad.Punto.y;
-            uint z = (uint)agregarDensidad.Punto.z;
+            uint x = (uint)(agregarDensidad.Punto.x + 1);
+            uint y = (uint)(agregarDensidad.Punto.y + 1);
+            uint z = (uint)(agregarDensidad.Punto.z + 1);
             _simulacion.AgregarDensidad(x, y, z, agregarDensidad.Densidad);
         }
 
         foreach (AgregarVelocidadEnPunto agregarVelocidad in _velocidadDeInicio)
         {
-            uint x = (uint)agregarVelocidad.Punto.x;
-            uint y = (uint)agregarVelocidad.Punto.y;
-            uint z = (uint)agregarVelocidad.Punto.z;
+            uint x = (uint)(agregarVelocidad.Punto.x + 1);
+            uint y = (uint)(agregarVelocidad.Punto.y + 1);
+            uint z = (uint)(agregarVelocidad.Punto.z + 1);
             _simulacion.AgregarVelocidad(x, y, z, agregarVelocidad.Velocidad);
         }
 

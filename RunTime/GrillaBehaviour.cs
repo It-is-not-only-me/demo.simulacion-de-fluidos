@@ -14,7 +14,7 @@ public class GrillaBehaviour : MonoBehaviour, IGrilla
         }
     }
     private IGrilla _grilla;
-    public IGrilla NuevaGrillaVacia() => new Grilla(_ancho, _alto, _profundidad);
+    public IGrilla NuevaGrillaVacia() => new Grilla(_ancho + 2, _alto + 2, _profundidad + 2);
     
 
     public DatoSimulacion this[uint i, uint j, uint k] { get => _grillaActual[i, j, k]; set => _grillaActual[i, j, k] = value; }
@@ -28,7 +28,7 @@ public class GrillaBehaviour : MonoBehaviour, IGrilla
 
     private void OnDrawGizmos()
     {
-        Vector3 ancho = Tamanio;
+        Vector3 ancho = Tamanio - 2 * Vector3Int.one;
         Gizmos.DrawWireCube(transform.position + 0.5f * ancho, ancho);
     }
 }

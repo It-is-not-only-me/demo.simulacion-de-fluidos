@@ -52,11 +52,13 @@ public class Simulacion : ISimulacion
         Vector3Int tamanioEcuaciones = tamanio - 2 * Vector3Int.one;
 
         uint cantidadEcuaciones = (uint)((tamanioEcuaciones.x) * (tamanioEcuaciones.y) * (tamanioEcuaciones.z));
-        MatrizDiscreta matrizDeConstantes = new MatrizDiscreta(cantidadEcuaciones, cantidadEcuaciones);
-        Vector vector = new Vector(cantidadEcuaciones);
+        IMatriz matrizDeConstantes = new MatrizDiscreta(cantidadEcuaciones, cantidadEcuaciones);
+        List<Vector> vectores = new List<Vector>();
+
+        for (int i = 0; i < 4; i++)
+            vectores.Add(new Vector(cantidadEcuaciones));
 
         float coeficiente = coeficienteDeDifucion / 6;
-
         List<Vector3Int> desfases = new List<Vector3Int>
         {
             Vector3Int.right, Vector3Int.left, Vector3Int.up, Vector3Int.down, Vector3Int.forward, Vector3Int.back
@@ -69,14 +71,20 @@ public class Simulacion : ISimulacion
                     uint indexActual = Index(i - 1, j - 1, k - 1, tamanioEcuaciones);
 
                     matrizDeConstantes[indexActual, indexActual] = 1 + coeficienteDeDifucion;
-                    vector[indexActual] = datosAnteriores[(uint)i, (uint)j, (uint)k].Densidad;
-                    
+                    DatoSimulacion datoActual = datosAnteriores[(uint)i, (uint)j, (uint)k];
+                    List<float> valoresDeDato = new List<float> { datoActual.Densidad, datoActual.Velocidad.x, datoActual.Velocidad.y, datoActual.Velocidad.z };
+                    for (int w = 0; w < 4; w++)
+                        vectores[w][indexActual] = valoresDeDato[w];
+
                     foreach (Vector3Int desfase in desfases)
                     {
                         int x = desfase.x, y = desfase.y, z = desfase.z;
                         if (EnBorde(i + x, j + y, k + z, tamanio))
                         {
-                            vector[indexActual] += datosAConseguir[(uint)i, (uint)j, (uint)k].Densidad * coeficiente;
+                            datoActual = datosAnteriores[(uint)(i + x), (uint)(j + y), (uint)(k + z)];
+                            valoresDeDato = new List<float> { datoActual.Densidad, datoActual.Velocidad.x, datoActual.Velocidad.y, datoActual.Velocidad.z };
+                            for (int w = 0; w < 4; w++)
+                                vectores[w][indexActual] += valoresDeDato[w] * coeficiente;
                         }
                         else
                         {
@@ -86,14 +94,18 @@ public class Simulacion : ISimulacion
                     }
                 }
 
-        IMatriz resultados = LinealSolver.GradienteConjugado(matrizDeConstantes, vector, cantidadDeIteraciones, errorMaximo);
-        for (int i = 1, contador = 0; i < tamanio.x - 1; i++)
-            for (int j = 1; j < tamanio.y - 1; j++)
-                for (int k = 1; k < tamanio.z - 1; k++, contador++)
+        List<IMatriz> resultados = new List<IMatriz>();
+        for (int i = 0; i < 4; i++)
+            resultados.Add(LinealSolver.GradienteConjugado(matrizDeConstantes, vectores[i], cantidadDeIteraciones, errorMaximo));
+
+        for (uint i = 1, contador = 0; i < tamanio.x - 1; i++)
+            for (uint j = 1; j < tamanio.y - 1; j++)
+                for (uint k = 1; k < tamanio.z - 1; k++, contador++)
                 {
-                    DatoSimulacion dato = datosAConseguir[(uint)i, (uint)j, (uint)k];
-                    dato.Densidad = resultados[(uint)contador, 0];
-                    datosAConseguir[(uint)i, (uint)j, (uint)k] = dato;
+                    DatoSimulacion dato = datosAConseguir[i, j, k];
+                    dato.Densidad = resultados[0][contador, 0];
+                    dato.Velocidad.Set(resultados[1][contador, 0], resultados[2][contador, 0], resultados[3][contador, 0]);
+                    datosAConseguir[i, j, k] = dato;
                 }
     }
 

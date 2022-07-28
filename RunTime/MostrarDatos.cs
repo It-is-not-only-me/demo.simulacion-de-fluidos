@@ -42,7 +42,7 @@ public class MostrarDatos : GenerarDatos
                 {
                     colores[contador] = new Color(0.75f, 0.75f, 1);
                     float valor = (i == 0 || j == 0 || k == 0) ? 0 : datosSimulacion[(uint)(i - 1), (uint)(j - 1), (uint)(k - 1)].Densidad;
-                    datos[contador++].CargarDatos(new Vector3(i, j, k), valor);
+                    datos[contador++].CargarDatos(new Vector3(i - 1, j - 1, k - 1), valor);
                 }
 
         _mesh.Datos = datos;
