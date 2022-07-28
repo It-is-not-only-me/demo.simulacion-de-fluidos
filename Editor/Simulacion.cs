@@ -35,15 +35,22 @@ public class Simulacion : ISimulacion
     {
         if (_intercambio)
         {
-            Diffuse(_grillaAuxilear, _grillaActual, _coeficienteDeDifusion, _errorMaximo, _cantidadIteraciones);
+            Simular(_grillaAuxilear, _grillaActual);
         }
         else
         {
-            Diffuse(_grillaActual, _grillaAuxilear, _coeficienteDeDifusion, _errorMaximo, _cantidadIteraciones);
-        }
-            
+            Simular(_grillaActual, _grillaAuxilear);
+        }            
 
         _intercambio = !_intercambio;
+    }
+
+    public void Simular(IGrilla datosAnteriores, IGrilla datosAConseguir)
+    {
+        Diffuse(datosAnteriores, datosAConseguir, _coeficienteDeDifusion, _errorMaximo, _cantidadIteraciones);
+        Project(datosAnteriores, datosAConseguir);
+        Advect(datosAnteriores, datosAConseguir);
+        Project(datosAnteriores, datosAConseguir);
     }
 
     public static void Diffuse(IGrilla datosAnteriores, IGrilla datosAConseguir, float coeficienteDeDifucion, float errorMaximo, int cantidadDeIteraciones)
@@ -107,6 +114,16 @@ public class Simulacion : ISimulacion
                     dato.Velocidad.Set(resultados[1][contador, 0], resultados[2][contador, 0], resultados[3][contador, 0]);
                     datosAConseguir[i, j, k] = dato;
                 }
+    }
+
+    public static void Advect(IGrilla datosAnteriores, IGrilla datosAConseguir)
+    {
+
+    }
+
+    public static void Project(IGrilla datosAnteriores, IGrilla datosAConseguir)
+    {
+
     }
 
     private static uint Index(int x, int y, int z, Vector3Int tamanio)
