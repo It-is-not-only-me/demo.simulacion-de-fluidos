@@ -293,7 +293,13 @@ MonoBehaviour:
   _densidadDeInicio:
   - Punto: {x: 4, y: 0, z: 4}
     Densidad: 100
-  _velocidadDeInicio: []
+  - Punto: {x: 0, y: 0, z: 0}
+    Densidad: 100
+  _velocidadDeInicio:
+  - Punto: {x: 4, y: 0, z: 4}
+    Velocidad: {x: 1, y: 0, z: 1}
+  - Punto: {x: 5, y: 0, z: 4}
+    Velocidad: {x: 1, y: 0, z: 1}
   _cantidadDeIteraciones: 10
   _coeficienteDeDifusion: 1
   _dt: 0.01
