@@ -176,6 +176,13 @@ public class Simulacion : ISimulacion
                     for (int w = 0; w < 3; w++)
                     {
                         int x = 0, y = 0, z = 0;
+                        switch (w)
+                        {
+                            case 0: x = 1; break;
+                            case 1: y = 1; break;
+                            case 2: z = 1; break;
+                        }
+
                         if (EnBorde(i + x, j + y, k + z, tamanio) || EnBorde(i - x, j - y, k - z, tamanio))
                         {
                             dato.Velocidad[w] = datosAnteriores[(uint)i, (uint)j, (uint)k].Velocidad[w];
@@ -183,7 +190,7 @@ public class Simulacion : ISimulacion
                         else
                         {
                             uint indexAdelante = Index(i + x - 1, j + y - 1, k + z - 1, tamanioEcuaciones);
-                            uint indexAtras = Index(i + x - 1, j + y - 1, k + z - 1, tamanioEcuaciones);
+                            uint indexAtras = Index(i - x - 1, j - y - 1, k - z - 1, tamanioEcuaciones);
                             dato.Velocidad[w] = (valoresDeP[indexAdelante, 0] -valoresDeP[indexAtras, 0]) / 2;
                         }
                     }
