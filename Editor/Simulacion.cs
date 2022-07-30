@@ -185,13 +185,14 @@ public class Simulacion : ISimulacion
 
                         if (EnBorde(i + x, j + y, k + z, tamanio) || EnBorde(i - x, j - y, k - z, tamanio))
                         {
-                            dato.Velocidad[w] = datosAnteriores[(uint)i, (uint)j, (uint)k].Velocidad[w];
+                            dato.Velocidad[w] = 0;
                         }
                         else
                         {
                             uint indexAdelante = Index(i + x - 1, j + y - 1, k + z - 1, tamanioEcuaciones);
                             uint indexAtras = Index(i - x - 1, j - y - 1, k - z - 1, tamanioEcuaciones);
-                            dato.Velocidad[w] = (valoresDeP[indexAdelante, 0] -valoresDeP[indexAtras, 0]) / 2;
+                            float velocidadAnterior = datosAnteriores[(uint)i, (uint)j, (uint)k].Velocidad[w];
+                            dato.Velocidad[w] = velocidadAnterior - (valoresDeP[indexAdelante, 0] -valoresDeP[indexAtras, 0]) / 2;
                         }
                     }
                     datosAConseguir[(uint)i, (uint)j, (uint)k] = dato;
